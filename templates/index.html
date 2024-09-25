@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Three.js with Article on the Side</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/three@0.130.1/build/three.min.js"></script>
+
+    <!-- Styles pour la mise en page -->
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap');
+
+/* Styles de base */
+body {
+  margin: 0;
+  font-family: 'Montserrat', sans-serif;
+  background-color: black;
+  color: #333;
+}
+
+/* Style de la barre de navigation */
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
+  padding: 20px 40px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+nav .logo {
+  font-size: 50px;
+  font-weight: 700;
+  background: linear-gradient(45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+
+nav .logo:hover {
+  transform: scale(1.05);
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 30px;
+}
+
+nav ul li a {
+  font-size: 18px;
+  color: red;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+nav ul li a:hover {
+  color: blueviolet;
+}
+
+/* Conteneur principal */
+.container {
+  display: flex;
+  
+  padding: 30px;
+  max-width: 1600px;
+  
+  gap: 6px;
+}
+
+article {
+  width: 38.2%; /* L'article occupe 38,2 % pour suivre le ratio d'or */
+  padding: 20px;
+  background-color: white;
+  color: black;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+article h2 {
+  font-size: 26px;
+  color: black;
+  margin-bottom: 15px;
+}
+
+article p {
+  font-size: 16px;
+  line-height: 1.6;
+  color: black;
+}
+
+/* Section Three.js */
+.right-container {
+  width: 61.8%; /* Le conteneur Three.js occupe 61,8 % pour suivre le ratio d'or */
+  display: flex;
+  flex-direction: column;
+  
+}
+
+.text-container {
+  background-color: white;
+  color: black;
+  padding: 15px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.text-container h4 {
+  font-size: 20px;
+  margin-bottom: 5px;
+}
+
+#threejs-container {
+  flex-grow: 1;
+  background-color: #111;
+  border-radius: 8px;
+  min-height: 600px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* Adaptation mobile */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+    padding: 20px;
+  }
+
+  article, .right-container, .text-container {
+    width: 100%;
+  }
+
+  #threejs-container {
+    width: 100%;
+    min-height: 400px;
+  }
+
+nav ul {
+    flex-direction: column; /* Disposition verticale des éléments */
+    gap: 15px; /* Espacement entre les éléments */
+    align-items: flex-start; /* Aligner à gauche */
+  }
+
+  nav ul li a {
+    font-size: 16px; /* Réduire la taille de la police */
+  }
+}
+
+    </style>
+
+  </head>
+  <body>
+
+     <nav>
+      <div class="logo">NewOrbit</div>
+      <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Services</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </nav>
+
+    <!-- Conteneur principal -->
+    <div class="container">
+      <!-- Article à gauche -->
+      <article>
+        <h2>Informations complémentaires</h2>
+        <p>Ceci est un article sur le côté gauche, à côté du conteneur Three.js.
+        Climate Pulse is a new interactive web application developed and maintained by the Copernicus Climate Change Service (C3S) to make climate monitoring more accessible to a broad audience. This page provides daily charts and maps of global surface air temperature and sea surface temperature updated close to real-time, as well as an archive of past daily, monthly and annual maps.
+
+Climate Pulse complements other regular climate monitoring activities carried out by the C3S Climate Intelligence Team, including its monthly Climate Bulletin and the annual reports European State of the Climate and Global Climate Highlights.
+
+The graphics displayed here are based on data from the ERA5 climate reanalysis, a global dataset produced for C3S by the European Centre for Medium-Range Weather Forecasts (ECMWF). More information about the data and methodology can be found in the FAQs.
+        </p>
+      </article>
+
+      <!-- Conteneur pour Three.js -->
+       <div class="right-container">
+        <!-- Conteneur pour le texte -->
+        <div class="text-container">
+          <h4>Surface air temperature anomaly ● 7 Sep 2024</h4>
+          <p>Daily average ● Baseline: 1991-2020</p>
+          <p>Data: ERA5 ● Credit: C3S/ECMWF</p>
+        </div>
+
+        <!-- Conteneur pour Three.js -->
+        <div id="threejs-container"></div>
+      </div>
+    
+    </div>
+
+    <!-- OrbitControls pour Three.js -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.127.0/examples/js/controls/OrbitControls.js"></script>
+    
+    <script>
+      // Initialisation de la scène, de la caméra et du renderer
+     window.onload = function() {
+    // Sélectionner le conteneur après le chargement complet de la page
+    var container = document.getElementById('threejs-container');
+
+    // Initialisation de la scène, de la caméra et du renderer
+    var scene = new THREE.Scene();
+    var camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+    var renderer = new THREE.WebGLRenderer();
+    renderer.setClearColor(0x000000); // Couleur de fond : bleu nuit
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    container.appendChild(renderer.domElement);
+
+    // Lumière
+    var light = new THREE.AmbientLight(0x404040, 2); // Lumière douce
+    scene.add(light);
+
+    var directionalLight = new THREE.DirectionalLight(0xffe08a, 1.0);
+    directionalLight.position.set(5, 5, 5).normalize();
+    scene.add(directionalLight);
+
+    var hemiLight = new THREE.HemisphereLight(0xffe5b4, 0x080820, 0.3); // Lumière du ciel et de la terre
+  hemiLight.position.set(0, 50, 0); // Position dans le ciel
+  scene.add(hemiLight);
+
+    // Création d'une sphère (Terre)
+    var geometry = new THREE.SphereGeometry(1, 32, 32);
+    var texture = new THREE.TextureLoader().load('../templates/images/2k_mercury.jpg'); // Remplacez par le chemin vers votre texture
+    var material = new THREE.MeshPhongMaterial({ map: texture });
+    var sphere = new THREE.Mesh(geometry, material);
+    
+    scene.add(sphere);
+
+    
+
+    // Position de la caméra
+    
+    camera.position.z = 3;
+    
+    
+    
+
+    // OrbitControls pour l'interaction
+    var controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.45;
+    controls.enableZoom = true;
+
+    
+    
+
+    controls.minDistance = 2; // La caméra ne peut pas aller plus près que 3 unités
+    controls.maxDistance = 10; // La caméra ne peut pas aller plus loin que 10 unités
+    controls.rotateSpeed = 0.54; // Contrôle la vitesse de rotation de la caméra (plus petite valeur = rotation plus lente)
+    controls.zoomSpeed = 0.6;   // Contrôle la vitesse du zoom (plus petite valeur = zoom plus lent)
+
+    // Fonction d'animation
+    function animate() {
+        requestAnimationFrame(animate);
+        controls.update();
+        renderer.render(scene, camera);
+    }
+
+    animate(); // Démarre l'animation
+
+    // Ajuster la taille lors du redimensionnement de la fenêtre
+    window.addEventListener('resize', function() {
+        var width = container.clientWidth;
+        var height = container.clientHeight;
+        renderer.setSize(width, height);
+        camera.aspect = width / height; // Met à jour l'aspect ratio
+        camera.updateProjectionMatrix(); // Met à jour la matrice de projection
+    });
+};
+
+    </script>
+    
+  </body>
+</html>
