@@ -223,7 +223,7 @@ The graphics displayed here are based on data from the ERA5 climate reanalysis, 
 
     // Création d'une sphère (Terre)
     var geometry = new THREE.SphereGeometry(1, 32, 32);
-    var texture = new THREE.TextureLoader().load('../templates/images/2k_mercury.jpg'); // Remplacez par le chemin vers votre texture
+    var texture = new THREE.TextureLoader().load('../static/images/2k_mercury.jpg'); // Remplacez par le chemin vers votre texture
     var material = new THREE.MeshPhongMaterial({ map: texture });
     var sphere = new THREE.Mesh(geometry, material);
     
